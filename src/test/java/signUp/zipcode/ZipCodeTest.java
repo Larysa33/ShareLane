@@ -1,3 +1,5 @@
+package signUp.zipcode;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -16,7 +18,7 @@ public class ZipCodeTest {
         System.setProperty("webdriver.chrome.driver", "src/test/resources/chromedriver.exe");
         ChromeOptions options=new ChromeOptions();
         options.addArguments("--headless");
-        driver  = new ChromeDriver(options);
+        driver = new ChromeDriver(options);
     }
 
     @Test
