@@ -24,48 +24,82 @@ public class SignUpFormTest {
     }
 
     @DataProvider
-    public Object[][] registrationDataAndValidationResult() {
+    public Object[][] requiredFieldsData() {
         return new Object[][]{
-                {new SignUpForm("Tatyana", "123@tmmcv.com", "12345"), true}, //tests for First Name
-                {new SignUpForm("Tatyana1", "124@tmmcv.com", "12345"), false},
-                {new SignUpForm("", "125@tmmcv.com", "12345"), false},
-                {new SignUpForm("Ab Vd", "126@tmmcv.com", "12345"), true},
-                {new SignUpForm("A", "127@tmmcv.com", "12345"), true},
-                {new SignUpForm(" ", "128@tmmcv.com", "12345"), false}, //fails - space as a name is a bug
-                {new SignUpForm(" Ann", "129@tmmcv.com", "12345"), false}, //fails - name starting from whitespace is a bug
-                {new SignUpForm("***", "1210@tmmcv.com", "12345"), false},
-                {new SignUpForm("t_a", "1211@tmmcv.com", "12345"), false},
-                {new SignUpForm("Татьяна", "1234@tmmcv.com", "12345"), true}, //fails
-                {new SignUpForm("Tatyana", "1212@tmmcv.com", "12345"), true}, // tests for email
-                {new SignUpForm("Tatyana", "1212@tmmcv.com", "12345"), false}, //fails - previously used email
-                {new SignUpForm("Tatyana", "1213tmmcv.com", "12345"), false},
-                {new SignUpForm("Tatyana", "1214@tmmcv", "12345"), false},
-                {new SignUpForm("Tatyana", "1215@tmmcv.", "12345"), false}, //fails - email without top level domain
-                {new SignUpForm("Tatyana", "1216 @tmmcv.com", "12345"), false}, //fails - email with whitespace
-                {new SignUpForm("Tatyana", "", "12345"), false},
-                {new SignUpForm("Tatyana", " ", "12345"), false},
-                {new SignUpForm("Tatyana", " 1217@tmmcv.com", "12345"), false}, // fails - email starts with whitespace
-                {new SignUpForm("Tatyana", "1218@tmmcv.com", "1"), false}, //tests for password
-                {new SignUpForm("Tatyana", "1219@tmmcv.com", "1234"), true},
-                {new SignUpForm("Tatyana", "1220@tmmcv.com", "bbbbb"), true},
-                {new SignUpForm("Tatyana", "1221@tmmcv.com", ""), false},
-                {new SignUpForm("Tatyana", "1222@tmmcv.com", "\"asd\""), true},
-                {new SignUpForm("Tatyana", "1223@tmmcv.com", "    "), true}, // any symbols in password are accepted
-                {new SignUpForm("Tatyana", "1224@tmmcv.com", "абвгд"), true},
-                {new SignUpForm("Tatyana", "1225@tmmcv.com", "1234а"), true},
-                {new SignUpForm("Tatyana", "1226@tmmcv.com", "aaaa*"), true},
-                {new SignUpForm("Tatyana", "1227@tmmcv.com", "12345", "1234"), false}, //test for confirmation - fails
-                {new SignUpForm("Tatyana", "", "1228@tmmcv.com", "12345", "12345"), true}, //tests for Last Name
-                {new SignUpForm("Tatyana", "Tatyana", "1229@tmmcv.com", "12345", "12345"), true},
-                {new SignUpForm("Tatyana", "Tat1", "1230@tmmcv.com", "12345", "12345"), false}, //fails - name with digits shouldn't be accepted
-                {new SignUpForm("Tatyana", " ", "1231@tmmcv.com", "12345", "12345"), true},
-                {new SignUpForm("Tatyana", "***", "1232@tmmcv.com", "12345", "12345"), false}, // fails - name with special chars shouldn't be accepted
-                {new SignUpForm("Tatyana", "Абв", "1233@tmmcv.com", "12345", "12345"), true},
+                {new SignUpForm("Test", "test@gmail.com", "12345", "12345"), true}
         };
     }
 
-    @Test(dataProvider = "registrationDataAndValidationResult")
-    public void testRegistrationForm(SignUpForm SignUpFormData, boolean validationResult) {
+    @Test(dataProvider = "requiredFieldsData")
+    public void signUpWithFilledOutRequiredFields(SignUpForm SignUpFormData, boolean validationResult){
+        driver.get("https://www.sharelane.com/cgi-bin/register.py?page=1&zip_code=12345");
+        WebElement firstNameInput = driver.findElement(By.name("first_name"));
+        firstNameInput.sendKeys(SignUpFormData.getFirstName());
+        WebElement emailInput = driver.findElement(By.name("email"));
+        emailInput.sendKeys(SignUpFormData.getEmail());
+        WebElement passwordInput = driver.findElement(By.name("password1"));
+        passwordInput.sendKeys(SignUpFormData.getPassword());
+        WebElement passwordConfirmationInput = driver.findElement(By.name("password2"));
+        passwordConfirmationInput.sendKeys(SignUpFormData.getPasswordConfirmation());
+        driver.findElement(By.cssSelector("input[value='Register']")).click();
+        Assert.assertEquals(UtilMethods.isElementDisplayed(driver, By.className("confirmation_message")), validationResult,
+                "All required fields must be filled out.");
+    }
+
+    @DataProvider
+    public Object[][] allFieldsData() {
+        return new Object[][]{
+                {new SignUpForm("Test", "Test","test@gmail.com", "12345", "12345"), true}
+        };
+    }
+
+    @Test(dataProvider = "allFieldsData")
+    public void signUpWithAllFilledOutFields(SignUpForm SignUpFormData, boolean validationResult){
+        driver.get("https://www.sharelane.com/cgi-bin/register.py?page=1&zip_code=12345");
+        WebElement firstNameInput = driver.findElement(By.name("first_name"));
+        firstNameInput.sendKeys(SignUpFormData.getFirstName());
+        WebElement lastNameInput = driver.findElement(By.name("last_name"));
+        firstNameInput.sendKeys(SignUpFormData.getFirstName());
+        WebElement emailInput = driver.findElement(By.name("email"));
+        emailInput.sendKeys(SignUpFormData.getEmail());
+        WebElement passwordInput = driver.findElement(By.name("password1"));
+        passwordInput.sendKeys(SignUpFormData.getPassword());
+        WebElement passwordConfirmationInput = driver.findElement(By.name("password2"));
+        passwordConfirmationInput.sendKeys(SignUpFormData.getPasswordConfirmation());
+        driver.findElement(By.cssSelector("input[value='Register']")).click();
+        Assert.assertEquals(UtilMethods.isElementDisplayed(driver, By.className("confirmation_message")), validationResult,
+                "Input data is invalid");
+    }
+
+    @Test
+    public void signUpWithAllEmptyFields(){
+        boolean validationResult=false;
+        driver.get("https://www.sharelane.com/cgi-bin/register.py?page=1&zip_code=12345");
+        driver.findElement(By.cssSelector("input[value='Register']")).click();
+        Assert.assertEquals(UtilMethods.isElementDisplayed(driver, By.className("confirmation_message")), validationResult,
+                "All required fields must be filled out.");
+    }
+
+    @DataProvider
+    public Object[][] firstNameFieldTestData() {
+        return new Object[][]{
+                {new SignUpForm("test", "111@gmail.com", "12345"), true},
+                {new SignUpForm("TEST", "222@gmail.com", "12345"), true},
+                {new SignUpForm("test123", "789@gmail.com", "12345"), false},
+                {new SignUpForm("*#!&_", "999@gmail.com", "12345"), false},
+                {new SignUpForm("катя", "333@gmail.com", "12345"), false},
+                {new SignUpForm("", "444@gmail.com", "12345"), false},
+                {new SignUpForm("First Name", "555@gmail.com", "12345"), true},
+                {new SignUpForm("t", "666@gmail.com", "12345"), true},
+                {new SignUpForm(" ", "777@gmail.com", "12345"), false},
+                {new SignUpForm(" test", "888@gmail.com", "12345"), false},
+                {new SignUpForm("test ", "123@gmail.com", "12345"), false},
+                {new SignUpForm("test_test", "456@gmail.com", "12345"), false}
+        };
+    }
+
+    @Test(dataProvider = "firstNameFieldTestData")
+    public void firstNameFieldTest(SignUpForm SignUpFormData, boolean validationResult) {
         driver.get("https://www.sharelane.com/cgi-bin/register.py?page=1&zip_code=12345");
         WebElement firstNameInput = driver.findElement(By.name("first_name"));
         firstNameInput.sendKeys(SignUpFormData.getFirstName());
@@ -79,7 +113,113 @@ public class SignUpFormTest {
         passwordConfirmationInput.sendKeys(SignUpFormData.getPasswordConfirmation());
         driver.findElement(By.cssSelector("input[value='Register']")).click();
         Assert.assertEquals(UtilMethods.isElementDisplayed(driver, By.className("confirmation_message")), validationResult,
-                "Input data is invalid");
+                "Data in the field 'First Name' is invalid.");
+    }
+
+    @DataProvider
+    public Object[][] lastNameFieldTestData() {
+        return new Object[][]{
+                {new SignUpForm("test", "", "111@mail.ru", "12345", "12345"), true},
+                {new SignUpForm("test", "test", "222@mail.ru", "12345", "12345"), true},
+                {new SignUpForm("test", "test123", "333@mail.ru", "12345", "12345"), false},
+                {new SignUpForm("test", "*!#&", "444@mail.ru", "12345", "12345"), false},
+                {new SignUpForm("test", "TEST", "555@mail.ru", "12345", "12345"), true},
+                {new SignUpForm("test", "смирнова", "666@mail.ru", "12345", "12345"), false},
+                {new SignUpForm("test", "last name", "777@mail.ru","12345", "12345"), true},
+                {new SignUpForm("test","t","888@mail.ru" ,"12345", "12345"), true},
+                {new SignUpForm("test", " ","999@mail.ru", "12345", "12345"), false},
+                {new SignUpForm("test"," test", "123@mail.ru", "12345", "12345"), false},
+                {new SignUpForm("test", "test ", "456@mail.ru", "12345", "12345"), false},
+                {new SignUpForm("test", "test_test","789@mail.ru",  "12345", "12345"), false}
+        };
+    }
+
+    @Test(dataProvider = "lastNameFieldTestData")
+    public void lastNameFieldTest(SignUpForm SignUpFormData, boolean validationResult) {
+        driver.get("https://www.sharelane.com/cgi-bin/register.py?page=1&zip_code=12345");
+        WebElement firstNameInput = driver.findElement(By.name("first_name"));
+        firstNameInput.sendKeys(SignUpFormData.getFirstName());
+        WebElement lastNameInput = driver.findElement(By.name("last_name"));
+        lastNameInput.sendKeys(SignUpFormData.getLastName());
+        WebElement emailInput = driver.findElement(By.name("email"));
+        emailInput.sendKeys(SignUpFormData.getEmail());
+        WebElement passwordInput = driver.findElement(By.name("password1"));
+        passwordInput.sendKeys(SignUpFormData.getPassword());
+        WebElement passwordConfirmationInput = driver.findElement(By.name("password2"));
+        passwordConfirmationInput.sendKeys(SignUpFormData.getPasswordConfirmation());
+        driver.findElement(By.cssSelector("input[value='Register']")).click();
+        Assert.assertEquals(UtilMethods.isElementDisplayed(driver, By.className("confirmation_message")), validationResult,
+                "Data in the field 'Last Name' is invalid.");
+    }
+
+    @DataProvider
+    public Object[][] emailFieldTestData() {
+        return new Object[][]{
+                {new SignUpForm("test", "123@yahoo.com", "12345"), true},
+                {new SignUpForm("test", "123@yahoo.com", "12345"), false}, //previously used email
+                {new SignUpForm("test", "111yahoo.com", "12345"), false}, //without @
+                {new SignUpForm("test", "111@yahoo", "12345"), false}, //without ".com"
+                {new SignUpForm("test", "111@yahoo.", "12345"), false}, //without domain
+                {new SignUpForm("test", "1234 @yahoo.com", "12345"), false}, //with space
+                {new SignUpForm("test", "", "12345"), false},
+                {new SignUpForm("test", " ", "12345"), false},
+                {new SignUpForm("test", " 222@yahoo.com", "12345"), false},
+                {new SignUpForm("test", "333@yahoo.com ", "12345"), false},
+        };
+    }
+
+    @Test(dataProvider = "emailFieldTestData")
+    public void emailFieldTest(SignUpForm SignUpFormData, boolean validationResult) {
+        driver.get("https://www.sharelane.com/cgi-bin/register.py?page=1&zip_code=12345");
+        WebElement firstNameInput = driver.findElement(By.name("first_name"));
+        firstNameInput.sendKeys(SignUpFormData.getFirstName());
+        WebElement lastNameInput = driver.findElement(By.name("last_name"));
+        lastNameInput.sendKeys(SignUpFormData.getLastName());
+        WebElement emailInput = driver.findElement(By.name("email"));
+        emailInput.sendKeys(SignUpFormData.getEmail());
+        WebElement passwordInput = driver.findElement(By.name("password1"));
+        passwordInput.sendKeys(SignUpFormData.getPassword());
+        WebElement passwordConfirmationInput = driver.findElement(By.name("password2"));
+        passwordConfirmationInput.sendKeys(SignUpFormData.getPasswordConfirmation());
+        driver.findElement(By.cssSelector("input[value='Register']")).click();
+        Assert.assertEquals(UtilMethods.isElementDisplayed(driver, By.className("confirmation_message")), validationResult,
+                "Data in the field 'Email' is invalid.");
+    }
+
+    @DataProvider
+    public Object[][] passwordFieldTestData() {
+        return new Object[][]{
+                {new SignUpForm("test", "111@yandex.ru", "123"), false},
+                {new SignUpForm("test", "222@yandex.ru", "1234"), true},
+                {new SignUpForm("test", "333@yandex.ru", "12345"), true},
+                {new SignUpForm("test", "444@yandex.ru", "bbbb"), true},
+                {new SignUpForm("test", "555@yandex.ru", ""), false},
+                {new SignUpForm("test", "666@yandex.ru", "12 34"), false}, //space in the middle
+                {new SignUpForm("test", "777@yandex.ru", " 1234"), false}, //space before password
+                {new SignUpForm("test", "888@yandex.ru", "1234 "), false}, //space after password
+                {new SignUpForm("test", "999@yandex.ru", "\"asd\""), false},
+                {new SignUpForm("test", "123@yandex.ru", "абвг"), false},
+                {new SignUpForm("test", "456@yandex.ru", "*!#&"), true},
+                {new SignUpForm("test", "789@yandex.ru", "1234", "12345"), false}, //password confirmation
+        };
+    }
+
+    @Test(dataProvider = "passwordFieldTestData")
+    public void passwordFieldTest(SignUpForm SignUpFormData, boolean validationResult) {
+        driver.get("https://www.sharelane.com/cgi-bin/register.py?page=1&zip_code=12345");
+        WebElement firstNameInput = driver.findElement(By.name("first_name"));
+        firstNameInput.sendKeys(SignUpFormData.getFirstName());
+        WebElement lastNameInput = driver.findElement(By.name("last_name"));
+        lastNameInput.sendKeys(SignUpFormData.getLastName());
+        WebElement emailInput = driver.findElement(By.name("email"));
+        emailInput.sendKeys(SignUpFormData.getEmail());
+        WebElement passwordInput = driver.findElement(By.name("password1"));
+        passwordInput.sendKeys(SignUpFormData.getPassword());
+        WebElement passwordConfirmationInput = driver.findElement(By.name("password2"));
+        passwordConfirmationInput.sendKeys(SignUpFormData.getPasswordConfirmation());
+        driver.findElement(By.cssSelector("input[value='Register']")).click();
+        Assert.assertEquals(UtilMethods.isElementDisplayed(driver, By.className("confirmation_message")), validationResult,
+                "Data in the field 'Password' is incorrect.");
     }
 
     @AfterClass
