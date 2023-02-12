@@ -12,7 +12,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import util.UtilMethods;
 
-public class ZipCodeTest {
+public class ZipcodeTest {
     WebDriver driver;
 
     @BeforeClass
@@ -24,7 +24,7 @@ public class ZipCodeTest {
     }
 
     @Test
-    public void validZipCode(){
+    public void validZipcodeTest(){
         boolean isValid=true;
         driver.get("https://www.sharelane.com/cgi-bin/register.py");
         WebElement zipCodeInput = driver.findElement(By.name("zip_code"));
@@ -40,7 +40,7 @@ public class ZipCodeTest {
     }
 
     @Test
-    public void emptyZipCode(){
+    public void emptyZipcodeTest(){
         boolean isValid=false;
         driver.get("https://www.sharelane.com/cgi-bin/register.py");
         driver.findElement(By.cssSelector("input[value='Continue']")).click();
@@ -50,7 +50,7 @@ public class ZipCodeTest {
     }
 
     @Test
-    public void textInputZipCode(){
+    public void textInputZipcodeTest(){
         boolean isValid=false;
         driver.get("https://www.sharelane.com/cgi-bin/register.py");
         WebElement zipCodeInput = driver.findElement(By.name("zip_code"));
@@ -62,7 +62,7 @@ public class ZipCodeTest {
     }
 
     @Test
-    public void specialSymbolsInputZipCode(){
+    public void specialSymbolsInputZipcodeTest(){
         boolean isValid=false;
         driver.get("https://www.sharelane.com/cgi-bin/register.py");
         WebElement zipCodeInput = driver.findElement(By.name("zip_code"));
@@ -74,7 +74,7 @@ public class ZipCodeTest {
     }
 
     @Test
-    public void zipCodeBoundaryTestingNegative(){
+    public void zipcodeBoundaryTestingNegative(){
         boolean isValid=false;
         driver.get("https://www.sharelane.com/cgi-bin/register.py");
         WebElement zipCodeInput = driver.findElement(By.name("zip_code"));
@@ -86,7 +86,7 @@ public class ZipCodeTest {
     }
 
     @Test
-    public void zipCodeBoundaryTestingPositive(){
+    public void zipcodeBoundaryTestingPositive(){
         boolean isValid=true;
         driver.get("https://www.sharelane.com/cgi-bin/register.py");
         WebElement zipCodeInput = driver.findElement(By.name("zip_code"));
@@ -97,7 +97,7 @@ public class ZipCodeTest {
     }
 
     @Test
-    public void maxNumberOfEnteredDigits(){
+    public void maxNumberOfEnteredDigitsTest(){
         boolean isValid=false;
         driver.get("https://www.sharelane.com/cgi-bin/register.py");
         WebElement zipCodeInput = driver.findElement(By.name("zip_code"));
@@ -109,7 +109,7 @@ public class ZipCodeTest {
     }
 
     @DataProvider
-    public Object[][] zipCodesAWithSpaces() {
+    public Object[][] zipcodeValuesWithSpaces() {
         return new Object[][]{
                 {" 12345", false},
                 {"123 45", false},
@@ -117,8 +117,8 @@ public class ZipCodeTest {
         };
     }
 
-    @Test(dataProvider = "zipCodesAWithSpaces")
-    public void testZipCode(String zipCode, boolean isValid) {
+    @Test(dataProvider = "zipcodeValuesWithSpaces")
+    public void zipcodeWithSpacesTest(String zipCode, boolean isValid) {
         driver.get("https://sharelane.com/cgi-bin/register.py");
         WebElement zipCodeInput = driver.findElement(By.name("zip_code"));
         zipCodeInput.sendKeys(String.valueOf(zipCode));
