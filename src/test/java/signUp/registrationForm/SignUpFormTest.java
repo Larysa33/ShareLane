@@ -94,7 +94,8 @@ public class SignUpFormTest {
                 {new SignUpForm(" ", "777@gmail.com", "12345"), false},
                 {new SignUpForm(" test", "888@gmail.com", "12345"), false},
                 {new SignUpForm("test ", "123@gmail.com", "12345"), false},
-                {new SignUpForm("test_test", "456@gmail.com", "12345"), false}
+                {new SignUpForm("testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest",
+                        "456@gmail.com", "12345"), false}
         };
     }
 
@@ -130,7 +131,8 @@ public class SignUpFormTest {
                 {new SignUpForm("test", " ","999@mail.ru", "12345", "12345"), false},
                 {new SignUpForm("test"," test", "123@mail.ru", "12345", "12345"), false},
                 {new SignUpForm("test", "test ", "456@mail.ru", "12345", "12345"), false},
-                {new SignUpForm("test", "test_test","789@mail.ru",  "12345", "12345"), false}
+                {new SignUpForm("test", "testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest",
+                        "789@mail.ru",  "12345", "12345"), false}
         };
     }
 
