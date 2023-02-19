@@ -1,4 +1,4 @@
-package signUp;
+package signUp.signupForm;
 
 public class SignUpForm {
     private String firstName;

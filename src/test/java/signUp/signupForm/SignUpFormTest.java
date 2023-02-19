@@ -1,10 +1,12 @@
-package signUp;
+package signUp.signupForm;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import signUp.signupForm.BaseTest;
+import signUp.signupForm.SignUpForm;
 
 public class SignUpFormTest extends BaseTest {
 
